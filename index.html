@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Day/Night Tracker - Balanced View</title>
+<title>Day/Night Tracker - 9 Row Schedule</title>
 <style>
   /* Base Reset & Background */
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,7 +31,7 @@
   .sky { 
     border-radius: 14px; 
     overflow: hidden; 
-    height: 130px; /* Adjusted to medium height */
+    height: 130px; 
     position: relative; 
     margin-bottom: 16px; 
     transition: background 1.2s ease;
@@ -47,7 +47,7 @@
 
   #celestial { 
     position: absolute; 
-    width: 38px; /* Proportional sizing */
+    width: 38px; 
     height: 38px; 
     border-radius: 50%; 
     top: 50%; 
@@ -100,7 +100,7 @@
   .fill-day { background: #fbbf24; }
   .fill-night { background: #6366f1; }
 
-  /* Upcoming Table */
+  /* Upcoming Table - Adjusted for 9 Rows */
   .upcoming { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; }
   .upcoming h3 { font-size: 13px; font-weight: 700; color: #cbd5e1; margin-bottom: 14px; text-transform: uppercase; text-align: center; }
   
@@ -113,12 +113,14 @@
   }
   .cycle-table th { text-align: center; padding-bottom: 8px; color: #64748b; font-weight: 600; }
   .cycle-table td { 
-    padding: 10px 8px; 
+    padding: 11px 8px; 
     background: rgba(255, 255, 255, 0.03);
     text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
-  .cycle-table td:first-child { border-radius: 8px 0 0 8px; }
-  .cycle-table td:last-child { border-radius: 0 8px 8px 0; }
+  .cycle-table td:first-child { border-radius: 8px 0 0 8px; border-left: 1px solid rgba(255, 255, 255, 0.05); }
+  .cycle-table td:last-child { border-radius: 0 8px 8px 0; border-right: 1px solid rgba(255, 255, 255, 0.05); }
 
   .pill { padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; }
   .pill-day { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
@@ -181,7 +183,7 @@
   const dayMs   = 2 * 60 * 60 * 1000;
   const ANCHOR_DATE = new Date(2026, 3, 29, 13, 30, 0); 
 
-  function getSegments(count = 15) {
+  function getSegments(count = 12) {
     const now = new Date();
     let segments = [];
     let cursor = new Date(ANCHOR_DATE);
@@ -240,7 +242,8 @@
 
     const tbody = document.getElementById('cycles-body');
     tbody.innerHTML = '';
-    segments.slice(0, 10).forEach(s => {
+    // Display exactly 9 rows in the table
+    segments.slice(0, 9).forEach(s => {
       const tr = document.createElement('tr');
       if (s.isSpecialReset) tr.style.background = "rgba(99, 102, 241, 0.08)";
       tr.innerHTML = `
