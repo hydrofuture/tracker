@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Day/Night Tracker - 9 Row Schedule</title>
+<title>Day/Night Tracker - 112px Visualizer</title>
 <style>
   /* Base Reset & Background */
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,11 +27,11 @@
     letter-spacing: 0.5px;
   }
 
-  /* Balanced Glassmorphism Sky Box */
+  /* Specifically 112px Glassmorphism Sky Box */
   .sky { 
     border-radius: 14px; 
     overflow: hidden; 
-    height: 130px; 
+    height: 112px; /* Set to exactly 112 pixels */
     position: relative; 
     margin-bottom: 16px; 
     transition: background 1.2s ease;
@@ -47,22 +47,22 @@
 
   #celestial { 
     position: absolute; 
-    width: 38px; 
-    height: 38px; 
+    width: 34px; /* Adjusted for 112px height */
+    height: 34px; 
     border-radius: 50%; 
     top: 50%; 
     transform: translateY(-50%); 
     transition: left 1s linear; 
   }
-  .widget.is-day #celestial { background: #fbbf24; box-shadow: 0 0 25px #fbbf24; }
-  .widget.is-night #celestial { background: #f1f5f9; box-shadow: 0 0 18px rgba(255, 255, 255, 0.4); }
+  .widget.is-day #celestial { background: #fbbf24; box-shadow: 0 0 22px #fbbf24; }
+  .widget.is-night #celestial { background: #f1f5f9; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
 
   .horizon { 
     position: absolute; 
     bottom: 0; 
     left: 0; 
     right: 0; 
-    height: 25px; 
+    height: 22px; 
     background: rgba(16, 185, 129, 0.2); 
     backdrop-filter: blur(4px);
   }
@@ -100,7 +100,7 @@
   .fill-day { background: #fbbf24; }
   .fill-night { background: #6366f1; }
 
-  /* Upcoming Table - Adjusted for 9 Rows */
+  /* Upcoming Table */
   .upcoming { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; }
   .upcoming h3 { font-size: 13px; font-weight: 700; color: #cbd5e1; margin-bottom: 14px; text-transform: uppercase; text-align: center; }
   
@@ -136,10 +136,10 @@
 
   <div id="sky" class="sky">
     <div id="stars">
-      <svg width="100%" height="100%" viewBox="0 0 480 130">
-        <circle cx="40" cy="20" r="1.2" fill="white" opacity="0.9"/><circle cx="170" cy="30" r="1.8" fill="white" opacity="0.8"/>
-        <circle cx="300" cy="25" r="1" fill="white" opacity="0.9"/><circle cx="420" cy="22" r="1.5" fill="white" opacity="0.8"/>
-        <circle cx="100" cy="50" r="1" fill="white" opacity="0.5"/><circle cx="380" cy="80" r="1.2" fill="white" opacity="0.6"/>
+      <svg width="100%" height="100%" viewBox="0 0 480 112">
+        <circle cx="40" cy="18" r="1.1" fill="white" opacity="0.9"/><circle cx="170" cy="28" r="1.6" fill="white" opacity="0.8"/>
+        <circle cx="300" cy="22" r="1" fill="white" opacity="0.9"/><circle cx="420" cy="20" r="1.3" fill="white" opacity="0.8"/>
+        <circle cx="100" cy="45" r="0.9" fill="white" opacity="0.5"/><circle cx="380" cy="70" r="1.1" fill="white" opacity="0.6"/>
       </svg>
     </div>
     <div id="celestial"></div>
@@ -242,7 +242,6 @@
 
     const tbody = document.getElementById('cycles-body');
     tbody.innerHTML = '';
-    // Display exactly 9 rows in the table
     segments.slice(0, 9).forEach(s => {
       const tr = document.createElement('tr');
       if (s.isSpecialReset) tr.style.background = "rgba(99, 102, 241, 0.08)";
