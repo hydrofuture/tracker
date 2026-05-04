@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Permanent Day/Night Tracker - Dark Mode</title>
+<style>
+  /* Base Reset & Background */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    background: #0f172a; /* Deep slate background */
+    color: #f8fafc;
+    display: flex; 
+    justify-content: center; 
+    padding: 24px 16px; 
+  }
+
+  .widget { width: 100%; max-width: 480px; }
+  
+  .current-time { 
+    text-align: center; 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: #94a3b8; 
+    margin-bottom: 12px; 
+    letter-spacing: 0.5px;
+  }
+
+  /* Glassmorphism Sky Box */
+  .sky { 
+    border-radius: 16px; 
+    overflow: hidden; 
+    height: 160px; 
+    position: relative; 
+    margin-bottom: 16px; 
+    transition: background 1.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .widget.is-day .sky { background: linear-gradient(to bottom, #1e40af 0%, #3b82f6 100%); }
+  .widget.is-night .sky { background: linear-gradient(to bottom, #020617 0%, #1e1b4b 100%); }
+
+  #stars { position: absolute; inset: 0; transition: opacity 1.2s; }
+  .widget.is-day #stars { opacity: 0; }
+  .widget.is-night #stars { opacity: 0.6; }
+
+  #celestial { 
+    position: absolute; 
+    width: 44px; 
+    height: 44px; 
+    border-radius: 50%; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    transition: left 1s linear; 
+  }
+  .widget.is-day #celestial { background: #fbbf24; box-shadow: 0 0 30px #fbbf24; }
+  .widget.is-night #celestial { background: #f1f5f9; box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); }
+
+  .horizon { 
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    height: 30px; 
+    background: rgba(16, 185, 129, 0.2); 
+    backdrop-filter: blur(4px);
+  }
+
+  /* Glassmorphism Badges & Cards */
+  .phase-badge { 
+    position: absolute; 
+    top: 12px; 
+    right: 12px; 
+    padding: 6px 16px; 
+    border-radius: 20px; 
+    font-size: 12px; 
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .badge-day { background: rgba(251, 191, 36, 0.2); color: #fef3c7; }
+  .badge-night { background: rgba(99, 102, 241, 0.2); color: #e0e7ff; }
+
+  .stats { display: flex; gap: 12px; margin-bottom: 20px; }
+  .stat-card { 
+    flex: 1; 
+    background: rgba(255, 255, 255, 0.05); 
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    border-radius: 12px; 
+    padding: 12px; 
+  }
+  .stat-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .stat-val { font-size: 18px; font-weight: 700; color: #fff; }
+
+  /* Progress Bar */
+  .progress-header { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 8px; font-weight: 600; }
+  .progress-track { background: rgba(255, 255, 255, 0.1); border-radius: 10px; height: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; transition: width 1s linear; }
+  .fill-day { background: #fbbf24; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+  .fill-night { background: #6366f1; box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
+
+  .next-label { font-size: 13px; color: #94a3b8; text-align: center; margin-top: 12px; font-style: italic; }
+
+  /* Upcoming Table - Dark Glass */
+  .upcoming { margin-top: 32px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; }
+  .upcoming h3 { font-size: 14px; font-weight: 700; color: #cbd5e1; margin-bottom: 16px; text-transform: uppercase; }
+  .cycle-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: 12px; }
+  .cycle-table th { text-align: left; padding: 0 8px 8px 8px; color: #64748b; font-weight: 600; }
+  .cycle-table td { 
+    padding: 10px 8px; 
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .cycle-table td:first-child { border-left: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px 0 0 8px; }
+  .cycle-table td:last-child { border-right: 1px solid rgba(255, 255, 255, 0.05); border-radius: 0 8px 8px 0; }
+
+  .pill { padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; }
+  .pill-day { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+  .pill-night { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+
+  .anchor-info { font-size: 11px; color: #475569; text-align: center; margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<main id="widget" class="widget">
+  <div id="current-time-display" class="current-time">--:--:--</div>
+
+  <div id="sky" class="sky">
+    <div id="stars">
+      <svg width="100%" height="100%" viewBox="0 0 480 160">
+        <circle cx="40" cy="22" r="1.5" fill="white" opacity="0.9"/><circle cx="170" cy="35" r="2" fill="white" opacity="0.8"/>
+        <circle cx="300" cy="30" r="1" fill="white" opacity="0.9"/><circle cx="420" cy="25" r="1.5" fill="white" opacity="0.8"/>
+        <circle cx="100" cy="80" r="1" fill="white" opacity="0.5"/><circle cx="380" cy="110" r="1.2" fill="white" opacity="0.6"/>
+      </svg>
+    </div>
+    <div id="celestial"></div>
+    <div class="horizon"></div>
+    <div id="phase-badge" class="phase-badge"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Phase</div>
+      <div id="stat-phase" class="stat-val">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Remaining</div>
+      <div id="stat-remaining" class="stat-val">—</div>
+    </div>
+  </div>
+
+  <div class="progress-header"><span>PROGRESS</span><span id="pct-label">0%</span></div>
+  <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+  <div id="next-label" class="next-label"></div>
+
+  <section class="upcoming">
+    <h3>Upcoming Cycles</h3>
+    <table class="cycle-table">
+      <thead><tr><th>Type</th><th>Start</th><th>End</th><th>Dur.</th></tr></thead>
+      <tbody id="cycles-body"></tbody>
+    </table>
+  </section>
+
+  <div class="anchor-info">Anchored: April 29, 2026, 1:30 PM</div>
+</main>
+
+<script>
+  // Logical constants remain unchanged to preserve tracking accuracy
+  const nightMs = 30 * 60 * 1000;
+  const dayMs   = 2 * 60 * 60 * 1000;
+  const ANCHOR_DATE = new Date(2026, 3, 29, 13, 30, 0); 
+
+  function getSegments(count = 15) {
+    const now = new Date();
+    let segments = [];
+    let cursor = new Date(ANCHOR_DATE);
+    let isDay = true; 
+    let nightCount = 0;
+
+    while (cursor < now || segments.length < count) {
+      let duration = isDay ? dayMs : nightMs;
+      let start = new Date(cursor.getTime());
+      let end = new Date(cursor.getTime() + duration);
+
+      if (!isDay) nightCount++;
+      let isSpecialReset = (!isDay && nightCount > 0 && nightCount % 3 === 0);
+
+      if (end > now) {
+        segments.push({ phase: isDay ? 'DAY' : 'NIGHT', start, end, isSpecialReset });
+      }
+
+      if (isSpecialReset) {
+        cursor = new Date(start.getTime() + nightMs);
+        isDay = true;
+        nightCount = 0;
+      } else {
+        cursor = new Date(end.getTime());
+        isDay = !isDay;
+      }
+      if (segments.length > count + 50) break;
+    }
+    return segments;
+  }
+
+  function update() {
+    const now = new Date();
+    document.getElementById('current-time-display').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+
+    const segments = getSegments(12);
+    if (!segments.length) return;
+    
+    const seg = segments[0];
+    const isDay = seg.phase === 'DAY';
+    
+    const elapsed = now - seg.start;
+    const total = seg.end - seg.start;
+    const remaining = Math.max(0, seg.end - now);
+    const pct = Math.min(100, Math.max(0, Math.round((elapsed / total) * 100)));
+
+    document.getElementById('widget').className = 'widget ' + (isDay ? 'is-day' : 'is-night');
+    document.getElementById('celestial').style.left = (10 + (pct / 100) * 80) + '%';
+    document.getElementById('phase-badge').textContent = isDay ? '☀ DAY' : '☾ NIGHT';
+    document.getElementById('phase-badge').className = 'phase-badge ' + (isDay ? 'badge-day' : 'badge-night');
+    document.getElementById('stat-phase').textContent = isDay ? 'Day' : 'Night';
+    document.getElementById('stat-remaining').textContent = fmt(remaining);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-fill').className = 'progress-fill ' + (isDay ? 'fill-day' : 'fill-night');
+    document.getElementById('pct-label').textContent = pct + '%';
+    document.getElementById('next-label').textContent = `Transition in ${fmt(remaining)}`;
+
+    const tbody = document.getElementById('cycles-body');
+    tbody.innerHTML = '';
+    segments.slice(0, 8).forEach(s => {
+      const tr = document.createElement('tr');
+      // Highlight the reset row with a subtle indigo glow
+      if (s.isSpecialReset) tr.style.background = "rgba(99, 102, 241, 0.08)";
+      tr.innerHTML = `
+        <td><span class="pill ${s.phase === 'DAY' ? 'pill-day' : 'pill-night'}">${s.phase}</span></td>
+        <td>${s.start.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</td>
+        <td>${s.end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</td>
+        <td>${s.phase === 'DAY' ? '2h' : '30m'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function fmt(ms) {
+    let s = Math.floor(ms / 1000);
+    let h = Math.floor(s / 3600);
+    let m = Math.floor((s % 3600) / 60);
+    let sec = s % 60;
+    return h > 0 ? `${h}h ${m}m` : `${m}m ${sec}s`;
+  }
+
+  setInterval(update, 1000);
+  update();
+</script>
+</body>
+</html>
