@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Day/Night Tracker - Compact</title>
+<title>Day/Night Tracker - Balanced View</title>
 <style>
   /* Base Reset & Background */
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,20 +20,20 @@
   
   .current-time { 
     text-align: center; 
-    font-size: 13px; 
+    font-size: 14px; 
     font-weight: 700; 
     color: #94a3b8; 
-    margin-bottom: 10px; 
+    margin-bottom: 12px; 
     letter-spacing: 0.5px;
   }
 
-  /* Compact Glassmorphism Sky Box */
+  /* Balanced Glassmorphism Sky Box */
   .sky { 
-    border-radius: 12px; 
+    border-radius: 14px; 
     overflow: hidden; 
-    height: 100px; /* Reduced from 160px */
+    height: 130px; /* Adjusted to medium height */
     position: relative; 
-    margin-bottom: 12px; 
+    margin-bottom: 16px; 
     transition: background 1.2s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -47,32 +47,32 @@
 
   #celestial { 
     position: absolute; 
-    width: 32px; /* Reduced from 44px */
-    height: 32px; 
+    width: 38px; /* Proportional sizing */
+    height: 38px; 
     border-radius: 50%; 
     top: 50%; 
     transform: translateY(-50%); 
     transition: left 1s linear; 
   }
-  .widget.is-day #celestial { background: #fbbf24; box-shadow: 0 0 20px #fbbf24; }
-  .widget.is-night #celestial { background: #f1f5f9; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+  .widget.is-day #celestial { background: #fbbf24; box-shadow: 0 0 25px #fbbf24; }
+  .widget.is-night #celestial { background: #f1f5f9; box-shadow: 0 0 18px rgba(255, 255, 255, 0.4); }
 
   .horizon { 
     position: absolute; 
     bottom: 0; 
     left: 0; 
     right: 0; 
-    height: 20px; 
+    height: 25px; 
     background: rgba(16, 185, 129, 0.2); 
     backdrop-filter: blur(4px);
   }
 
   .phase-badge { 
     position: absolute; 
-    top: 8px; 
-    right: 10px; 
-    padding: 4px 12px; 
-    border-radius: 15px; 
+    top: 10px; 
+    right: 12px; 
+    padding: 5px 14px; 
+    border-radius: 18px; 
     font-size: 11px; 
     font-weight: 700;
     backdrop-filter: blur(8px);
@@ -81,50 +81,50 @@
   .badge-day { background: rgba(251, 191, 36, 0.2); color: #fef3c7; }
   .badge-night { background: rgba(99, 102, 241, 0.2); color: #e0e7ff; }
 
-  .stats { display: flex; gap: 10px; margin-bottom: 16px; }
+  .stats { display: flex; gap: 12px; margin-bottom: 18px; }
   .stat-card { 
     flex: 1; 
     background: rgba(255, 255, 255, 0.05); 
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1); 
-    border-radius: 10px; 
-    padding: 10px; 
+    border-radius: 12px; 
+    padding: 12px; 
   }
-  .stat-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-  .stat-val { font-size: 16px; font-weight: 700; color: #fff; }
+  .stat-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .stat-val { font-size: 17px; font-weight: 700; color: #fff; }
 
   /* Progress Bar */
-  .progress-header { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 6px; font-weight: 600; }
-  .progress-track { background: rgba(255, 255, 255, 0.1); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 20px; }
+  .progress-header { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 8px; font-weight: 600; }
+  .progress-track { background: rgba(255, 255, 255, 0.1); border-radius: 10px; height: 10px; overflow: hidden; margin-bottom: 24px; }
   .progress-fill { height: 100%; transition: width 1s linear; }
   .fill-day { background: #fbbf24; }
   .fill-night { background: #6366f1; }
 
   /* Upcoming Table */
-  .upcoming { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; }
-  .upcoming h3 { font-size: 12px; font-weight: 700; color: #cbd5e1; margin-bottom: 12px; text-transform: uppercase; text-align: center; }
+  .upcoming { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; }
+  .upcoming h3 { font-size: 13px; font-weight: 700; color: #cbd5e1; margin-bottom: 14px; text-transform: uppercase; text-align: center; }
   
   .cycle-table { 
     width: 100%; 
     border-collapse: separate; 
-    border-spacing: 0 4px; 
-    font-size: 11px; 
+    border-spacing: 0 6px; 
+    font-size: 12px; 
     table-layout: fixed;
   }
-  .cycle-table th { text-align: center; padding-bottom: 6px; color: #64748b; font-weight: 600; }
+  .cycle-table th { text-align: center; padding-bottom: 8px; color: #64748b; font-weight: 600; }
   .cycle-table td { 
-    padding: 8px 6px; 
+    padding: 10px 8px; 
     background: rgba(255, 255, 255, 0.03);
     text-align: center;
   }
-  .cycle-table td:first-child { border-radius: 6px 0 0 6px; }
-  .cycle-table td:last-child { border-radius: 0 6px 6px 0; }
+  .cycle-table td:first-child { border-radius: 8px 0 0 8px; }
+  .cycle-table td:last-child { border-radius: 0 8px 8px 0; }
 
-  .pill { padding: 3px 8px; border-radius: 5px; font-weight: 800; font-size: 9px; letter-spacing: 0.5px; }
+  .pill { padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; }
   .pill-day { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
   .pill-night { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
 
-  .anchor-info { font-size: 10px; color: #475569; text-align: center; margin-top: 24px; }
+  .anchor-info { font-size: 10px; color: #475569; text-align: center; margin-top: 28px; }
 </style>
 </head>
 <body>
@@ -134,10 +134,10 @@
 
   <div id="sky" class="sky">
     <div id="stars">
-      <svg width="100%" height="100%" viewBox="0 0 480 100">
-        <circle cx="40" cy="15" r="1" fill="white" opacity="0.9"/><circle cx="170" cy="25" r="1.5" fill="white" opacity="0.8"/>
-        <circle cx="300" cy="20" r="0.8" fill="white" opacity="0.9"/><circle cx="420" cy="18" r="1" fill="white" opacity="0.8"/>
-        <circle cx="100" cy="40" r="0.8" fill="white" opacity="0.5"/><circle cx="380" cy="60" r="1" fill="white" opacity="0.6"/>
+      <svg width="100%" height="100%" viewBox="0 0 480 130">
+        <circle cx="40" cy="20" r="1.2" fill="white" opacity="0.9"/><circle cx="170" cy="30" r="1.8" fill="white" opacity="0.8"/>
+        <circle cx="300" cy="25" r="1" fill="white" opacity="0.9"/><circle cx="420" cy="22" r="1.5" fill="white" opacity="0.8"/>
+        <circle cx="100" cy="50" r="1" fill="white" opacity="0.5"/><circle cx="380" cy="80" r="1.2" fill="white" opacity="0.6"/>
       </svg>
     </div>
     <div id="celestial"></div>
