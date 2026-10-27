@@ -175,13 +175,17 @@
     </table>
   </section>
 
-  <div class="anchor-info">Anchored: April 29, 2026, 1:30 PM</div>
+  <div class="anchor-info">Anchored: October 27, 2026, 8:00 AM PST
+  <br>Last updated: October 27, 2026
+  <br> fkneo fkrim fkkyrin
+  </div>
 </main>
 
 <script>
   const nightMs = 30 * 60 * 1000;
   const dayMs   = 2 * 60 * 60 * 1000;
-  const ANCHOR_DATE = new Date(2026, 3, 29, 13, 30, 0); 
+  // Updated ANCHOR_DATE to October 27, 2026, at 8:00 AM (Month 9 is October since months are 0-indexed)
+  const ANCHOR_DATE = new Date(2026, 9, 27, 8, 0, 0); 
 
   function getSegments(count = 12) {
     const now = new Date();
